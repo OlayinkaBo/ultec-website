@@ -47,17 +47,17 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-east-1
         
-    - name: Deploy to S3 bucket
+    - name: Deploy to S3 bucket (ACL disabled)
       run: |
         echo "🚀 Starting deployment to S3 bucket: ultec-bucket"
         echo "📍 AWS Region: us-east-1"
+        echo "ℹ️  Using bucket policy (ACLs disabled)"
         
-        # Sync files to S3
+        # Sync files to S3 without ACL (using bucket policy instead)
         aws s3 sync . s3://ultec-bucket \
           --exclude '.git/*' \
           --exclude '.github/*' \
           --exclude 'README.md' \
-          --acl public-read \
           --delete
         
         echo "✅ Files uploaded successfully!"
