@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ULTEC Website - GitHub to AWS Deployment</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 ULTEC Website - Successfully Deployed!</h1>
+            <p>Automated deployment from GitHub to AWS S3 using GitHub Actions</p>
+        </header>
+        
+        <main>
+            <div class="feature-cards">
+                <div class="card">
+                    <h3>GitHub Repository</h3>
+                    <p>Repository: OlayinkaBo/ultec-website</p>
+                </div>
+                <div class="card">
+                    <h3>AWS S3 Bucket</h3>
+                    <p>Bucket: ultec-bucket (us-east-1)</p>
+                </div>
+                <div class="card">
+                    <h3>Deployment Status</h3>
+                    <p>CI/CD: GitHub Actions → AWS S3</p>
+                </div>
+            </div>
+            
+            <div class="deployment-info">
+                <h3>Deployment Status: <span id="status">Active ✅</span></h3>
+                <p>Bucket: <strong>ultec-bucket</strong> | Region: <strong>us-east-1</strong></p>
+                <p>Last deployed: <span id="timestamp"></span></p>
+            </div>
+        </main>
+        
+        <footer>
+            <p>ULTEC Website | Powered by GitHub Actions + AWS S3</p>
+        </footer>
+    </div>
+    
+    <script>
+        document.getElementById('timestamp').textContent = new Date().toLocaleString();
+    </script>
+</body>
+</html>

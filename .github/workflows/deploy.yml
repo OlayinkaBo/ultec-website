@@ -1,0 +1,77 @@
+name: Deploy ULTEC Website to AWS S3
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Validate website files
+      run: |
+        echo "🔍 Checking website files..."
+        if [ ! -f "index.html" ]; then
+          echo "❌ ERROR: index.html not found!"
+          exit 1
+        fi
+        
+        if [ ! -f "style.css" ]; then
+          echo "❌ ERROR: style.css not found!"
+          exit 1
+        fi
+        
+        echo "✅ All required files found!"
+        echo "📁 Files in repository:"
+        ls -la
+
+  deploy:
+    needs: test-deploy
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v3
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+        
+    - name: Deploy to S3 bucket
+      run: |
+        echo "🚀 Starting deployment to S3 bucket: ultec-bucket"
+        echo "📍 AWS Region: us-east-1"
+        
+        # Sync files to S3
+        aws s3 sync . s3://ultec-bucket \
+          --exclude '.git/*' \
+          --exclude '.github/*' \
+          --exclude 'README.md' \
+          --acl public-read \
+          --delete
+        
+        echo "✅ Files uploaded successfully!"
+        
+    - name: Verify deployment
+      run: |
+        echo "🔍 Verifying deployment..."
+        aws s3 ls s3://ultec-bucket/ --recursive --human-readable --summarize
+        
+    - name: Display website URL
+      run: |
+        echo "🎉 Deployment completed successfully!"
+        echo "🌐 Your ULTEC website is now live at:"
+        echo "   http://ultec-bucket.s3-website-us-east-1.amazonaws.com"
+        echo ""
+        echo "📊 Repository: https://github.com/OlayinkaBo/ultec-website"
+        echo "📍 S3 Bucket: ultec-bucket (us-east-1)"
